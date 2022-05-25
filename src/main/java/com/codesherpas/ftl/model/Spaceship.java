@@ -7,22 +7,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.codesherpas.ftl.exception.SpaceshipBadParametersException;
-
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "spaceships")
 public class Spaceship {
-	public Spaceship() {
-	}
-
-	public Spaceship(String name, Integer health) throws SpaceshipBadParametersException {
-		if(name == null || health == null) {
-			throw new SpaceshipBadParametersException();
-		}
-		
+	public Spaceship() {}
+	
+	public Spaceship(String name, Integer health) {
 		this.name = name;
 		this.health = health;
 	}
