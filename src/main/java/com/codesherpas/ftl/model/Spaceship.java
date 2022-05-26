@@ -29,4 +29,8 @@ public class Spaceship {
 
 	@Column(name = "health", nullable = false)
 	private Integer health;
+	
+	public boolean isDestroyed() {
+		return this.health.equals(0);
+	}
 }

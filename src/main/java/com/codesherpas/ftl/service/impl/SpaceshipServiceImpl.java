@@ -41,14 +41,14 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 		Spaceship attackerSpaceship = spaceshipRepository.findById(attackerId)
 				.orElseThrow(() -> new ResourceNotFoundException("Spaceship", "id", attackerId));
 		
-		if(attackerSpaceship.getHealth().equals(0)) {
+		if(attackerSpaceship.isDestroyed()) {
 			throw new DestroyedSpaceshipException(attackerSpaceship.getName());
 		}
 		
 		Spaceship victimSpaceship = spaceshipRepository.findById(victimId)
 				.orElseThrow(() -> new ResourceNotFoundException("Spaceship", "id", victimId));
 		
-		if(victimSpaceship.getHealth().equals(0)) {
+		if(victimSpaceship.isDestroyed()) {
 			throw new DestroyedSpaceshipException(victimSpaceship.getName());
 		}
 		
