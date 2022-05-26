@@ -13,13 +13,6 @@ import lombok.Data;
 @Entity
 @Table(name = "spaceships")
 public class Spaceship {
-	public Spaceship() {}
-	
-	public Spaceship(String name, Integer health) {
-		this.name = name;
-		this.health = health;
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -30,7 +23,10 @@ public class Spaceship {
 	@Column(name = "health", nullable = false)
 	private Integer health;
 	
-	public boolean isDestroyed() {
-		return this.health.equals(0);
+	public Spaceship() {}
+	
+	public Spaceship(String name, Integer health) {
+		this.name = name;
+		this.health = health;
 	}
 }

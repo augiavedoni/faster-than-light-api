@@ -1,9 +1,11 @@
 package com.codesherpas.ftl.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.codesherpas.ftl.dto.SpaceshipDTO;
 import com.codesherpas.ftl.exception.BadParameterException;
 import com.codesherpas.ftl.exception.DestroyedSpaceshipException;
 import com.codesherpas.ftl.exception.ResourceNotFoundException;
@@ -21,34 +23,49 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 	}
 
 	@Override
-	public Spaceship saveSpaceship(Spaceship spaceship) {
-		if(spaceship.getName() == null || spaceship.getName().isBlank()) {
-			throw new BadParameterException("name", spaceship.getName());
-		} else if(spaceship.getHealth() == null || spaceship.getHealth() >= 0) {
-			throw new BadParameterException("health", spaceship.getHealth());
+	public SpaceshipDTO saveSpaceship(SpaceshipDTO spaceshipDTO) {
+		if(spaceshipDTO.getName() == null || spaceshipDTO.getName().isBlank()) {
+			throw new BadParameterException("name", spaceshipDTO.getName());
+		} else if(spaceshipDTO.getHealth() == null || spaceshipDTO.getHealth() <= 0) {
+			throw new BadParameterException("health", spaceshipDTO.getHealth());
 		}
 		
-		return spaceshipRepository.save(spaceship);
+		Spaceship spaceship = new Spaceship(spaceshipDTO.getName(), spaceshipDTO.getHealth());
+		
+		Spaceship savedSpaceship = spaceshipRepository.save(spaceship);
+		
+		spaceshipDTO.setId(savedSpaceship.getId());
+		
+		return spaceshipDTO;
 	}
 
 	@Override
-	public List<Spaceship> getSpaceships() {
-		return spaceshipRepository.findAll();
+	public List<SpaceshipDTO> getSpaceships() {
+		List<Spaceship> spaceships = spaceshipRepository.findAll();
+		List<SpaceshipDTO> spaceshipsDTO = new ArrayList<SpaceshipDTO>();
+		
+		for(Spaceship spaceship: spaceships) {
+			SpaceshipDTO spaceshipDTO = new SpaceshipDTO(spaceship.getId(), spaceship.getName(), spaceship.getHealth());
+			
+			spaceshipsDTO.add(spaceshipDTO);
+		}
+		
+		return spaceshipsDTO;
 	}
 
 	@Override
-	public Spaceship shootSpaceship(long attackerId, long victimId) {
+	public SpaceshipDTO shootSpaceship(long attackerId, long victimId) {
 		Spaceship attackerSpaceship = spaceshipRepository.findById(attackerId)
 				.orElseThrow(() -> new ResourceNotFoundException("Spaceship", "id", attackerId));
 		
-		if(attackerSpaceship.isDestroyed()) {
+		if(attackerSpaceship.getHealth().equals(0)) {
 			throw new DestroyedSpaceshipException(attackerSpaceship.getName());
 		}
 		
 		Spaceship victimSpaceship = spaceshipRepository.findById(victimId)
 				.orElseThrow(() -> new ResourceNotFoundException("Spaceship", "id", victimId));
 		
-		if(victimSpaceship.isDestroyed()) {
+		if(victimSpaceship.getHealth().equals(0)) {
 			throw new DestroyedSpaceshipException(victimSpaceship.getName());
 		}
 		
@@ -58,6 +75,8 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 		
 		spaceshipRepository.save(victimSpaceship);
 		
-		return victimSpaceship;
+		SpaceshipDTO spaceshipDTO = new SpaceshipDTO(victimSpaceship.getId(), victimSpaceship.getName(), victimSpaceship.getHealth());
+		
+		return spaceshipDTO;
 	}
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codesherpas.ftl.model.Spaceship;
+import com.codesherpas.ftl.dto.SpaceshipDTO;
 import com.codesherpas.ftl.service.SpaceshipService;
 
 @RestController
@@ -27,20 +27,20 @@ public class SpaceshipController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<Spaceship> saveSpaceship(@RequestBody Spaceship spaceship) {
-		return new ResponseEntity<Spaceship>(spaceshipService.saveSpaceship(spaceship), HttpStatus.CREATED);
+	public ResponseEntity<SpaceshipDTO> saveSpaceship(@RequestBody SpaceshipDTO spaceshipDTO) {
+		return new ResponseEntity<SpaceshipDTO>(spaceshipService.saveSpaceship(spaceshipDTO), HttpStatus.CREATED);
 	}
 	
 	@GetMapping()
-	public ResponseEntity<List<Spaceship>> getSpaceships() {
-		return new ResponseEntity<List<Spaceship>>(spaceshipService.getSpaceships(), HttpStatus.OK);
+	public ResponseEntity<List<SpaceshipDTO>> getSpaceships() {
+		return new ResponseEntity<List<SpaceshipDTO>>(spaceshipService.getSpaceships(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(method = RequestMethod.PATCH, value = "/shoot")
-	public ResponseEntity<Spaceship> shootSpaceship(@RequestParam Map<String, String> spaceshipsId) {
+	public ResponseEntity<SpaceshipDTO> shootSpaceship(@RequestParam Map<String, String> spaceshipsId) {
 		final long attackerId = Long.parseLong(spaceshipsId.get("attackerId"));
 		final long victimId = Long.parseLong(spaceshipsId.get("victimId"));
 		
-		return new ResponseEntity<Spaceship>(spaceshipService.shootSpaceship(attackerId, victimId), HttpStatus.OK);
+		return new ResponseEntity<SpaceshipDTO>(spaceshipService.shootSpaceship(attackerId, victimId), HttpStatus.OK);
 	}
 }

@@ -2,10 +2,10 @@ package com.codesherpas.ftl.service;
 
 import java.util.List;
 
-import com.codesherpas.ftl.model.Spaceship;
+import com.codesherpas.ftl.dto.SpaceshipDTO;
 
 public interface SpaceshipService {
-	Spaceship saveSpaceship(Spaceship spaceship);
-	List<Spaceship> getSpaceships();
-	Spaceship shootSpaceship(long attackerId, long victimSpaceshipId);
+	SpaceshipDTO saveSpaceship(SpaceshipDTO spaceship);
+	List<SpaceshipDTO> getSpaceships();
+	SpaceshipDTO shootSpaceship(long attackerId, long victimSpaceshipId);
 }
