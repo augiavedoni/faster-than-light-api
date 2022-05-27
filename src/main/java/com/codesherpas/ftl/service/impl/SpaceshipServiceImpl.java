@@ -12,8 +12,10 @@ import com.codesherpas.ftl.exception.BadParameterException;
 import com.codesherpas.ftl.exception.DestroyedSpaceshipException;
 import com.codesherpas.ftl.exception.ResourceNotFoundException;
 import com.codesherpas.ftl.model.Spaceship;
+import com.codesherpas.ftl.model.Weapon;
 import com.codesherpas.ftl.repository.SpaceshipRepository;
 import com.codesherpas.ftl.service.SpaceshipService;
+import com.codesherpas.ftl.service.WeaponService;
 
 @Service
 public class SpaceshipServiceImpl implements SpaceshipService {
@@ -21,10 +23,12 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 	private ModelMapper modelMapper;
 	
 	private SpaceshipRepository spaceshipRepository;
+	private WeaponService weaponService;
 
-	public SpaceshipServiceImpl(SpaceshipRepository spaceshipRepository) {
+	public SpaceshipServiceImpl(SpaceshipRepository spaceshipRepository, WeaponService weaponService) {
 		super();
 		this.spaceshipRepository = spaceshipRepository;
+		this.weaponService = weaponService;
 	}
 	
 	private SpaceshipDTO convertToDTO(Spaceship spaceship) {
@@ -46,6 +50,8 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 		} else if(spaceshipDTO.getHealth() == null || spaceshipDTO.getHealth() <= 0) {
 			throw new BadParameterException("health", spaceshipDTO.getHealth());
 		}
+		
+		spaceshipDTO.setWeapon(new Weapon());
 		
 		Spaceship spaceship = convertToEntity(spaceshipDTO);
 		
@@ -86,14 +92,10 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 			throw new DestroyedSpaceshipException(victimSpaceship.getName());
 		}
 		
-		int spaceshipHealth = victimSpaceship.getHealth() - 1;
+		SpaceshipDTO damagedSpaceship = weaponService.shootSpaceship(convertToDTO(victimSpaceship));
 		
-		victimSpaceship.setHealth(spaceshipHealth);
+		spaceshipRepository.save(convertToEntity(damagedSpaceship));
 		
-		spaceshipRepository.save(victimSpaceship);
-		
-		SpaceshipDTO spaceshipDTO = convertToDTO(victimSpaceship);
-		
-		return spaceshipDTO;
+		return damagedSpaceship;
 	}
 }
