@@ -31,12 +31,13 @@ import com.codesherpas.ftl.exception.BadParameterException;
 import com.codesherpas.ftl.exception.DestroyedSpaceshipException;
 import com.codesherpas.ftl.exception.ResourceNotFoundException;
 import com.codesherpas.ftl.model.Spaceship;
+import com.codesherpas.ftl.model.Weapon;
 import com.codesherpas.ftl.service.SpaceshipService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = SpaceshipController.class)
-public class FtlApplicationTests {
+public class SpaceshipControllerTests {
 	private ModelMapper mapper =  new ModelMapper();
 	
 	@Autowired
@@ -50,7 +51,7 @@ public class FtlApplicationTests {
 	
 	@Test
 	public void whenPostValidSpaceship_thenReceiveCreated() throws Exception {
-		Spaceship destructor = new Spaceship("Destructor", 100);
+		Spaceship destructor = new Spaceship("Destructor", 100, new Weapon());
 		SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
 		final String expectedResponseContent = objectMapper.writeValueAsString(destructor);
 
@@ -68,7 +69,7 @@ public class FtlApplicationTests {
 
 	@Test
 	public void whenPostInvalidSpaceship_thenReceiveBadRequest() throws Exception {
-		Spaceship destructor = new Spaceship("Destructor", null);
+		Spaceship destructor = new Spaceship("Destructor", null, null);
 		SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
 
 		given(service.saveSpaceship(destructorDTO)).willThrow(new BadParameterException("health", destructorDTO.getHealth()));
@@ -84,9 +85,9 @@ public class FtlApplicationTests {
 
 	@Test
 	public void whenGetAllSpaceships_thenReceiveListOfSpaceships() throws Exception {
-    	Spaceship destructor = new Spaceship("Destructor", 100);
+    	Spaceship destructor = new Spaceship("Destructor", 100, new Weapon());
     	SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
-    	Spaceship fire = new Spaceship("Fire", 100);
+    	Spaceship fire = new Spaceship("Fire", 100, new Weapon());
     	SpaceshipDTO fireDTO = mapper.map(fire, SpaceshipDTO.class);
 
 	    List<SpaceshipDTO> spaceships = Arrays.asList(destructorDTO, fireDTO);
@@ -104,9 +105,9 @@ public class FtlApplicationTests {
 	
 	@Test
 	public void whenShootSpaceship_thenReceiveShooted() throws Exception {
-		Spaceship destructor = new Spaceship("Destructor", 100);
+		Spaceship destructor = new Spaceship("Destructor", 100, new Weapon());
 		SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
-		Spaceship fire = new Spaceship("Fire", 99);
+		Spaceship fire = new Spaceship("Fire", 99, new Weapon());
 		fire.setId(1);
 		SpaceshipDTO fireDTO = mapper.map(fire, SpaceshipDTO.class);
 		
@@ -146,7 +147,7 @@ public class FtlApplicationTests {
 	
 	@Test
 	public void whenShootSpaceship_thenReceiveDestroyedSpaceshipException() throws Exception {
-		Spaceship destructor = new Spaceship("Destructor", 100);
+		Spaceship destructor = new Spaceship("Destructor", 100, new Weapon());
 		destructor.setHealth(0);
 		
 		final LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
