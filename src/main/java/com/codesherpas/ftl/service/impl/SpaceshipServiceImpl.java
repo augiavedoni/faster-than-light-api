@@ -3,6 +3,8 @@ package com.codesherpas.ftl.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.codesherpas.ftl.dto.SpaceshipDTO;
@@ -15,11 +17,26 @@ import com.codesherpas.ftl.service.SpaceshipService;
 
 @Service
 public class SpaceshipServiceImpl implements SpaceshipService {
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	private SpaceshipRepository spaceshipRepository;
 
 	public SpaceshipServiceImpl(SpaceshipRepository spaceshipRepository) {
 		super();
 		this.spaceshipRepository = spaceshipRepository;
+	}
+	
+	private SpaceshipDTO convertToDTO(Spaceship spaceship) {
+		SpaceshipDTO spaceshipDTO = modelMapper.map(spaceship, SpaceshipDTO.class);
+		
+		return spaceshipDTO;
+	}
+	
+	private Spaceship convertToEntity(SpaceshipDTO spaceshipDTO) {
+		Spaceship spaceship = modelMapper.map(spaceshipDTO, Spaceship.class);
+		
+		return spaceship;
 	}
 
 	@Override
@@ -30,7 +47,7 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 			throw new BadParameterException("health", spaceshipDTO.getHealth());
 		}
 		
-		Spaceship spaceship = new Spaceship(spaceshipDTO.getName(), spaceshipDTO.getHealth());
+		Spaceship spaceship = convertToEntity(spaceshipDTO);
 		
 		Spaceship savedSpaceship = spaceshipRepository.save(spaceship);
 		
@@ -45,7 +62,7 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 		List<SpaceshipDTO> spaceshipsDTO = new ArrayList<SpaceshipDTO>();
 		
 		for(Spaceship spaceship: spaceships) {
-			SpaceshipDTO spaceshipDTO = new SpaceshipDTO(spaceship.getId(), spaceship.getName(), spaceship.getHealth());
+			SpaceshipDTO spaceshipDTO = convertToDTO(spaceship);
 			
 			spaceshipsDTO.add(spaceshipDTO);
 		}
@@ -75,7 +92,7 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 		
 		spaceshipRepository.save(victimSpaceship);
 		
-		SpaceshipDTO spaceshipDTO = new SpaceshipDTO(victimSpaceship.getId(), victimSpaceship.getName(), victimSpaceship.getHealth());
+		SpaceshipDTO spaceshipDTO = convertToDTO(victimSpaceship);
 		
 		return spaceshipDTO;
 	}
