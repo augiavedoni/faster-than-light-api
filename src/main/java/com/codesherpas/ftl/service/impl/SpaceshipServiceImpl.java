@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 
 import com.codesherpas.ftl.dto.PowerGeneratorDTO;
 import com.codesherpas.ftl.dto.SpaceshipDTO;
+import com.codesherpas.ftl.dto.WeaponDTO;
 import com.codesherpas.ftl.exception.BadParameterException;
 import com.codesherpas.ftl.exception.DestroyedSpaceshipException;
 import com.codesherpas.ftl.exception.ResourceNotFoundException;
 import com.codesherpas.ftl.model.Spaceship;
-import com.codesherpas.ftl.model.Weapon;
 import com.codesherpas.ftl.repository.SpaceshipRepository;
 import com.codesherpas.ftl.service.PowerGeneratorService;
 import com.codesherpas.ftl.service.SpaceshipService;
@@ -57,7 +57,7 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 			throw new BadParameterException("power-generator", spaceshipDTO.getPowerGenerator());
 		}
 		
-		spaceshipDTO.setWeapon(new Weapon());
+		spaceshipDTO.setWeapon(new WeaponDTO());
 		
 		PowerGeneratorDTO powerGeneratorDTO = powerGeneratorService.savePowerGenerator(spaceshipDTO.getPowerGenerator());
 		

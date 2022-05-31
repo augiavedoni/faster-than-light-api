@@ -51,14 +51,14 @@ public class SpaceshipControllerTests {
 	public void whenPostValidSpaceship_thenReceiveCreated() throws Exception {
 		Spaceship destructor = new Spaceship("Destructor", 100, new Weapon(), new PowerGenerator(1L, 200, 200));
 		SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
-		final String expectedResponseContent = objectMapper.writeValueAsString(destructor);
+		final String expectedResponseContent = objectMapper.writeValueAsString(destructorDTO);
 
 		given(service.saveSpaceship(destructorDTO)).willReturn(destructorDTO);
 
 		mvc.perform(
 				post("/api/spaceships")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(JsonUtil.toJson(destructor)))
+				.content(JsonUtil.toJson(destructorDTO)))
 				.andExpect(status().isCreated())
 				.andExpect(content().json(expectedResponseContent));
 
