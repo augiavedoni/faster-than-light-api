@@ -28,11 +28,15 @@ public class Spaceship {
 	@OneToOne(targetEntity = Weapon.class, cascade = CascadeType.ALL)
 	private Weapon weapon;
 	
+	@OneToOne(targetEntity = PowerGenerator.class)
+	private PowerGenerator powerGenerator;
+	
 	public Spaceship() {}
 	
-	public Spaceship(String name, Integer health, Weapon weapon) {
+	public Spaceship(String name, Integer health, Weapon weapon, PowerGenerator powerGenerator) {
 		this.name = name;
 		this.health = health;
 		this.weapon = weapon;
+		this.powerGenerator = powerGenerator;
 	}
 }

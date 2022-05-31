@@ -28,6 +28,7 @@ import com.codesherpas.ftl.dto.SpaceshipDTO;
 import com.codesherpas.ftl.exception.BadParameterException;
 import com.codesherpas.ftl.exception.DestroyedSpaceshipException;
 import com.codesherpas.ftl.exception.ResourceNotFoundException;
+import com.codesherpas.ftl.model.PowerGenerator;
 import com.codesherpas.ftl.model.Spaceship;
 import com.codesherpas.ftl.model.Weapon;
 import com.codesherpas.ftl.service.SpaceshipService;
@@ -48,16 +49,16 @@ public class SpaceshipControllerTests {
 	
 	@Test
 	public void whenPostValidSpaceship_thenReceiveCreated() throws Exception {
-		Spaceship destructor = new Spaceship("Destructor", 100, new Weapon());
+		Spaceship destructor = new Spaceship("Destructor", 100, new Weapon(), new PowerGenerator(1L, 200, 200));
 		SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
-		final String expectedResponseContent = objectMapper.writeValueAsString(destructor);
+		final String expectedResponseContent = objectMapper.writeValueAsString(destructorDTO);
 
 		given(service.saveSpaceship(destructorDTO)).willReturn(destructorDTO);
 
 		mvc.perform(
 				post("/api/spaceships")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(JsonUtil.toJson(destructor)))
+				.content(JsonUtil.toJson(destructorDTO)))
 				.andExpect(status().isCreated())
 				.andExpect(content().json(expectedResponseContent));
 
@@ -66,7 +67,7 @@ public class SpaceshipControllerTests {
 
 	@Test
 	public void whenPostInvalidSpaceship_thenReceiveBadRequest() throws Exception {
-		Spaceship destructor = new Spaceship("Destructor", null, null);
+		Spaceship destructor = new Spaceship("Destructor", null, null, null);
 		SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
 
 		given(service.saveSpaceship(destructorDTO)).willThrow(new BadParameterException("health", destructorDTO.getHealth()));
@@ -82,9 +83,9 @@ public class SpaceshipControllerTests {
 
 	@Test
 	public void whenGetAllSpaceships_thenReceiveListOfSpaceships() throws Exception {
-    	Spaceship destructor = new Spaceship("Destructor", 100, new Weapon());
+    	Spaceship destructor = new Spaceship("Destructor", 100, new Weapon(), new PowerGenerator(1L, 200, 200));
     	SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
-    	Spaceship fire = new Spaceship("Fire", 100, new Weapon());
+    	Spaceship fire = new Spaceship("Fire", 100, new Weapon(), new PowerGenerator(2L, 200, 200));
     	SpaceshipDTO fireDTO = mapper.map(fire, SpaceshipDTO.class);
 
 	    List<SpaceshipDTO> spaceships = Arrays.asList(destructorDTO, fireDTO);
@@ -102,9 +103,9 @@ public class SpaceshipControllerTests {
 	
 	@Test
 	public void whenShootSpaceship_thenReceiveShooted() throws Exception {
-		Spaceship destructor = new Spaceship("Destructor", 100, new Weapon());
+		Spaceship destructor = new Spaceship("Destructor", 100, new Weapon(), new PowerGenerator(1L, 200, 200));
 		SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
-		Spaceship fire = new Spaceship("Fire", 99, new Weapon());
+		Spaceship fire = new Spaceship("Fire", 99, new Weapon(), new PowerGenerator(2L, 200, 200));
 		fire.setId(1);
 		SpaceshipDTO fireDTO = mapper.map(fire, SpaceshipDTO.class);
 		
@@ -144,7 +145,7 @@ public class SpaceshipControllerTests {
 	
 	@Test
 	public void whenShootSpaceship_thenReceiveDestroyedSpaceshipException() throws Exception {
-		Spaceship destructor = new Spaceship("Destructor", 100, new Weapon());
+		Spaceship destructor = new Spaceship("Destructor", 100, new Weapon(), new PowerGenerator(1L, 200, 200));
 		destructor.setHealth(0);
 		
 		final LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();

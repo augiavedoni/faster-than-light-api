@@ -7,13 +7,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.codesherpas.ftl.dto.PowerGeneratorDTO;
 import com.codesherpas.ftl.dto.SpaceshipDTO;
+import com.codesherpas.ftl.dto.WeaponDTO;
 import com.codesherpas.ftl.exception.BadParameterException;
 import com.codesherpas.ftl.exception.DestroyedSpaceshipException;
 import com.codesherpas.ftl.exception.ResourceNotFoundException;
 import com.codesherpas.ftl.model.Spaceship;
-import com.codesherpas.ftl.model.Weapon;
 import com.codesherpas.ftl.repository.SpaceshipRepository;
+import com.codesherpas.ftl.service.PowerGeneratorService;
 import com.codesherpas.ftl.service.SpaceshipService;
 import com.codesherpas.ftl.service.WeaponService;
 
@@ -24,11 +26,13 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 	
 	private SpaceshipRepository spaceshipRepository;
 	private WeaponService weaponService;
+	private PowerGeneratorService powerGeneratorService;
 
-	public SpaceshipServiceImpl(SpaceshipRepository spaceshipRepository, WeaponService weaponService) {
+	public SpaceshipServiceImpl(SpaceshipRepository spaceshipRepository, WeaponService weaponService, PowerGeneratorService powerGeneratorService) {
 		super();
 		this.spaceshipRepository = spaceshipRepository;
 		this.weaponService = weaponService;
+		this.powerGeneratorService = powerGeneratorService;
 	}
 	
 	private SpaceshipDTO convertToDTO(Spaceship spaceship) {
@@ -49,9 +53,15 @@ public class SpaceshipServiceImpl implements SpaceshipService {
 			throw new BadParameterException("name", spaceshipDTO.getName());
 		} else if(spaceshipDTO.getHealth() == null || spaceshipDTO.getHealth() <= 0) {
 			throw new BadParameterException("health", spaceshipDTO.getHealth());
+		} else if(spaceshipDTO.getPowerGenerator() == null) {
+			throw new BadParameterException("power-generator", spaceshipDTO.getPowerGenerator());
 		}
 		
-		spaceshipDTO.setWeapon(new Weapon());
+		spaceshipDTO.setWeapon(new WeaponDTO());
+		
+		PowerGeneratorDTO powerGeneratorDTO = powerGeneratorService.savePowerGenerator(spaceshipDTO.getPowerGenerator());
+		
+		spaceshipDTO.setPowerGenerator(powerGeneratorDTO);
 		
 		Spaceship spaceship = convertToEntity(spaceshipDTO);
 		
