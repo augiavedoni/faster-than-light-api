@@ -102,7 +102,7 @@ public class SpaceshipControllerTests {
 	@Test
 	public void whenShootSpaceship_thenReceiveShooted() throws Exception {
 		SpaceshipEntity destructor = new SpaceshipEntity("Destructor", 100, new WeaponEntity(), new PowerGeneratorEntity(1L, 200, 200));
-		SpaceshipDTO destructorDTO =SpaceshipMapper.INSTANCE.convertToDto(destructor);
+		SpaceshipDTO destructorDTO = SpaceshipMapper.INSTANCE.convertToDto(destructor);
 		SpaceshipEntity fire = new SpaceshipEntity("Fire", 99, new WeaponEntity(), new PowerGeneratorEntity(2L, 200, 200));
 		fire.setId(1);
 		SpaceshipDTO fireDTO = SpaceshipMapper.INSTANCE.convertToDto(fire);
@@ -119,8 +119,8 @@ public class SpaceshipControllerTests {
 				.params(params)
 			    .contentType(MediaType.APPLICATION_JSON))
 			    .andExpect(status().isOk())
-			    .andExpect(jsonPath("$.health", is(99)))
-			    .andExpect(jsonPath("$.id", is(1)));
+			    .andExpect(jsonPath("$.id", is(1)))
+			    .andExpect(jsonPath("$.health", is(99)));
 		
 		verify(service, VerificationModeFactory.times(1)).shootSpaceship(destructorDTO.getId(), fireDTO.getId());
 	}
