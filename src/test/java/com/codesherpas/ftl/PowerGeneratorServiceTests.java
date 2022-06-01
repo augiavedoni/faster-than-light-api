@@ -10,10 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.codesherpas.ftl.exception.BadParameterException;
-import com.codesherpas.ftl.model.PowerGenerator;
-import com.codesherpas.ftl.repository.PowerGeneratorRepository;
-import com.codesherpas.ftl.service.impl.PowerGeneratorServiceImpl;
+import com.codesherpas.ftl.domain.exception.BadParameterException;
+import com.codesherpas.ftl.domain.service.impl.PowerGeneratorServiceImpl;
+import com.codesherpas.ftl.infrastructure.entity.PowerGeneratorEntity;
+import com.codesherpas.ftl.infrastructure.repository.PowerGeneratorRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class PowerGeneratorServiceTests {
@@ -25,11 +25,11 @@ public class PowerGeneratorServiceTests {
 	
 	@Test
 	public void whenSavePowerGenerator_receiveSavedPowerGenerator() {
-		PowerGenerator powerGenerator = new PowerGenerator(1L, 200, 200);
+		PowerGeneratorEntity powerGenerator = new PowerGeneratorEntity(1L, 200, 200);
 		
 		when(powerGeneratorRepository.save(powerGenerator)).thenReturn(powerGenerator);
 		
-		PowerGenerator savedPowerGenerator = powerGeneratorRepository.save(powerGenerator);
+		PowerGeneratorEntity savedPowerGenerator = powerGeneratorRepository.save(powerGenerator);
 		
 		
 		assertEquals(savedPowerGenerator.getId(), powerGenerator.getId());
@@ -40,7 +40,7 @@ public class PowerGeneratorServiceTests {
 	@Test
 	public void whenSavePowerGenerator_receiveBadParameterException() {
 		BadParameterException exception = Assertions.assertThrows(BadParameterException.class, () -> {
-			PowerGenerator powerGenerator = new PowerGenerator(1L, -1, 200);
+			PowerGeneratorEntity powerGenerator = new PowerGeneratorEntity(1L, -1, 200);
 			
 			when(powerGeneratorRepository.save(powerGenerator)).thenThrow(new BadParameterException("total-power", powerGenerator.getTotalPower()));
 			
