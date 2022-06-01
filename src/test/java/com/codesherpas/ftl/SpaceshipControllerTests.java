@@ -93,8 +93,8 @@ public class SpaceshipControllerTests {
 	    mvc.perform(get("/api/spaceships")
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isOk())
-	      .andExpect(jsonPath("$[0].name", is(destructor.getName())))
-	      .andExpect(jsonPath("$[1].name", is(fire.getName())));
+	      .andExpect(jsonPath("$[0].name", is(destructorDTO.getName())))
+	      .andExpect(jsonPath("$[1].name", is(fireDTO.getName())));
 	    
 	    verify(service, VerificationModeFactory.times(1)).getSpaceships();
 	}
