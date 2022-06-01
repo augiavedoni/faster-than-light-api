@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.verification.VerificationModeFactory;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,12 +31,11 @@ import com.codesherpas.ftl.domain.port.service.SpaceshipServicePort;
 import com.codesherpas.ftl.infrastructure.entity.PowerGeneratorEntity;
 import com.codesherpas.ftl.infrastructure.entity.SpaceshipEntity;
 import com.codesherpas.ftl.infrastructure.entity.WeaponEntity;
+import com.codesherpas.ftl.infrastructure.mappers.SpaceshipMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(value = SpaceshipController.class)
 public class SpaceshipControllerTests {
-	private ModelMapper mapper =  new ModelMapper();
-	
 	@Autowired
 	private MockMvc mvc;
 
@@ -50,7 +48,7 @@ public class SpaceshipControllerTests {
 	@Test
 	public void whenPostValidSpaceship_thenReceiveCreated() throws Exception {
 		SpaceshipEntity destructor = new SpaceshipEntity("Destructor", 100, new WeaponEntity(), new PowerGeneratorEntity(1L, 200, 200));
-		SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
+		SpaceshipDTO destructorDTO = SpaceshipMapper.INSTANCE.convertToDto(destructor);
 		final String expectedResponseContent = objectMapper.writeValueAsString(destructorDTO);
 
 		given(service.saveSpaceship(destructorDTO)).willReturn(destructorDTO);
@@ -68,7 +66,7 @@ public class SpaceshipControllerTests {
 	@Test
 	public void whenPostInvalidSpaceship_thenReceiveBadRequest() throws Exception {
 		SpaceshipEntity destructor = new SpaceshipEntity("Destructor", null, null, null);
-		SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
+		SpaceshipDTO destructorDTO = SpaceshipMapper.INSTANCE.convertToDto(destructor);
 
 		given(service.saveSpaceship(destructorDTO)).willThrow(new BadParameterException("health", destructorDTO.getHealth()));
 
@@ -84,9 +82,9 @@ public class SpaceshipControllerTests {
 	@Test
 	public void whenGetAllSpaceships_thenReceiveListOfSpaceships() throws Exception {
     	SpaceshipEntity destructor = new SpaceshipEntity("Destructor", 100, new WeaponEntity(), new PowerGeneratorEntity(1L, 200, 200));
-    	SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
+    	SpaceshipDTO destructorDTO = SpaceshipMapper.INSTANCE.convertToDto(destructor);
     	SpaceshipEntity fire = new SpaceshipEntity("Fire", 100, new WeaponEntity(), new PowerGeneratorEntity(2L, 200, 200));
-    	SpaceshipDTO fireDTO = mapper.map(fire, SpaceshipDTO.class);
+    	SpaceshipDTO fireDTO = SpaceshipMapper.INSTANCE.convertToDto(fire);
 
 	    List<SpaceshipDTO> spaceships = Arrays.asList(destructorDTO, fireDTO);
 
@@ -104,10 +102,10 @@ public class SpaceshipControllerTests {
 	@Test
 	public void whenShootSpaceship_thenReceiveShooted() throws Exception {
 		SpaceshipEntity destructor = new SpaceshipEntity("Destructor", 100, new WeaponEntity(), new PowerGeneratorEntity(1L, 200, 200));
-		SpaceshipDTO destructorDTO = mapper.map(destructor, SpaceshipDTO.class);
+		SpaceshipDTO destructorDTO =SpaceshipMapper.INSTANCE.convertToDto(destructor);
 		SpaceshipEntity fire = new SpaceshipEntity("Fire", 99, new WeaponEntity(), new PowerGeneratorEntity(2L, 200, 200));
 		fire.setId(1);
-		SpaceshipDTO fireDTO = mapper.map(fire, SpaceshipDTO.class);
+		SpaceshipDTO fireDTO = SpaceshipMapper.INSTANCE.convertToDto(fire);
 		
 		final LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
 		
