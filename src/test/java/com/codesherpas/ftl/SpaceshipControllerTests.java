@@ -73,7 +73,7 @@ public class SpaceshipControllerTests {
 		mvc.perform(
 				post("/api/spaceships")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(JsonUtil.toJson(destructor)))
+				.content(JsonUtil.toJson(destructorDTO)))
 				.andExpect(status().isBadRequest());
 
 		verify(service, VerificationModeFactory.times(1)).saveSpaceship(destructorDTO);
