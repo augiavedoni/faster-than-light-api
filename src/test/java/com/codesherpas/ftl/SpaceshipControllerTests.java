@@ -23,7 +23,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 
 import com.codesherpas.ftl.application.controller.SpaceshipController;
+import com.codesherpas.ftl.domain.dto.PowerGeneratorDTO;
 import com.codesherpas.ftl.domain.dto.SpaceshipDTO;
+import com.codesherpas.ftl.domain.dto.WeaponDTO;
 import com.codesherpas.ftl.domain.exception.BadParameterException;
 import com.codesherpas.ftl.domain.exception.DestroyedSpaceshipException;
 import com.codesherpas.ftl.domain.exception.ResourceNotFoundException;
@@ -101,11 +103,8 @@ public class SpaceshipControllerTests {
 	
 	@Test
 	public void whenShootSpaceship_thenReceiveShooted() throws Exception {
-		SpaceshipEntity destructor = new SpaceshipEntity("Destructor", 100, new WeaponEntity(), new PowerGeneratorEntity(1L, 200, 200));
-		SpaceshipDTO destructorDTO = SpaceshipMapper.INSTANCE.convertToDto(destructor);
-		SpaceshipEntity fire = new SpaceshipEntity("Fire", 99, new WeaponEntity(), new PowerGeneratorEntity(2L, 200, 200));
-		fire.setId(1);
-		SpaceshipDTO fireDTO = SpaceshipMapper.INSTANCE.convertToDto(fire);
+		SpaceshipDTO destructorDTO = new SpaceshipDTO(1L, "Destructor", 100, new WeaponDTO(1L), new PowerGeneratorDTO(1L, 200, 200));
+		SpaceshipDTO fireDTO = new SpaceshipDTO(2L, "Fire", 99, new WeaponDTO(2L), new PowerGeneratorDTO(2L, 200, 200));
 		
 		final LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
 		
@@ -119,7 +118,7 @@ public class SpaceshipControllerTests {
 				.params(params)
 			    .contentType(MediaType.APPLICATION_JSON))
 			    .andExpect(status().isOk())
-			    .andExpect(jsonPath("$.id", is(1)))
+			    .andExpect(jsonPath("$.id", is(2)))
 			    .andExpect(jsonPath("$.health", is(99)));
 		
 		verify(service, VerificationModeFactory.times(1)).shootSpaceship(destructorDTO.getId(), fireDTO.getId());
