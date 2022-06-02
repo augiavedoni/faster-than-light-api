@@ -109,8 +109,8 @@ public class SpaceshipControllerTests {
 		
 		final LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
 		
-		params.add("attackerId", String.valueOf(destructor.getId()));
-		params.add("victimId", String.valueOf(fire.getId()));
+		params.add("attackerId", String.valueOf(destructorDTO.getId()));
+		params.add("victimId", String.valueOf(fireDTO.getId()));
 		
 		given(service.shootSpaceship(destructorDTO.getId(), fireDTO.getId())).willReturn(fireDTO);
 		
