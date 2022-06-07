@@ -25,7 +25,7 @@ public class PowerGeneratorServiceTests {
 	
 	@Test
 	public void whenSavePowerGenerator_receiveSavedPowerGenerator() {
-		PowerGeneratorEntity powerGenerator = new PowerGeneratorEntity(1L, 200, 200);
+		PowerGeneratorEntity powerGenerator = new PowerGeneratorEntity(1L, 10, 5, 5);
 		
 		when(powerGeneratorRepository.save(powerGenerator)).thenReturn(powerGenerator);
 		
@@ -40,7 +40,7 @@ public class PowerGeneratorServiceTests {
 	@Test
 	public void whenSavePowerGenerator_receiveBadParameterException() {
 		BadParameterException exception = Assertions.assertThrows(BadParameterException.class, () -> {
-			PowerGeneratorEntity powerGenerator = new PowerGeneratorEntity(1L, -1, 200);
+			PowerGeneratorEntity powerGenerator = new PowerGeneratorEntity(1L, -1, 5, 5);
 			
 			when(powerGeneratorRepository.save(powerGenerator)).thenThrow(new BadParameterException("total-power", powerGenerator.getTotalPower()));
 			

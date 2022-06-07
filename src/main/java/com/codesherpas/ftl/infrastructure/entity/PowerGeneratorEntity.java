@@ -7,8 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
 @Data
@@ -20,18 +18,20 @@ public class PowerGeneratorEntity {
 	private long id;
 	
 	@Column(name = "total_power", nullable = false)
-	@JsonProperty("total-power")
 	private Integer totalPower;
 	
 	@Column(name = "power_not_in_use", nullable = false)
-	@JsonProperty("power-not-in-use")
 	private Integer powerNotInUse;
+	
+	@Column(name = "power_consumed_by_weapon", nullable = false)
+	private Integer powerConsumedByWeapon;
 	
 	public PowerGeneratorEntity() {}
 
-	public PowerGeneratorEntity(long id, Integer totalPower, Integer powerNotInUse) {
+	public PowerGeneratorEntity(long id, Integer totalPower, Integer powerNotInUse, Integer powerConsumedByWeapon) {
 		this.id = id;
 		this.totalPower = totalPower;
 		this.powerNotInUse = powerNotInUse;
+		this.powerConsumedByWeapon = powerConsumedByWeapon;
 	}
 }

@@ -3,23 +3,29 @@ package com.codesherpas.ftl.domain.service.impl;
 import java.util.List;
 
 import com.codesherpas.ftl.domain.data.Spaceship;
+import com.codesherpas.ftl.domain.data.Weapon;
 import com.codesherpas.ftl.domain.dto.PowerGeneratorDTO;
 import com.codesherpas.ftl.domain.dto.SpaceshipDTO;
 import com.codesherpas.ftl.domain.dto.WeaponDTO;
 import com.codesherpas.ftl.domain.exception.BadParameterException;
 import com.codesherpas.ftl.domain.exception.DestroyedSpaceshipException;
+import com.codesherpas.ftl.domain.exception.ExcessivePowerEnergyConsumptionException;
+import com.codesherpas.ftl.domain.exception.MissingPowerException;
 import com.codesherpas.ftl.domain.port.persistence.SpaceshipPersistencePort;
 import com.codesherpas.ftl.domain.port.service.PowerGeneratorServicePort;
 import com.codesherpas.ftl.domain.port.service.SpaceshipServicePort;
+import com.codesherpas.ftl.domain.port.service.WeaponServicePort;
 
 
 public class SpaceshipServiceImpl implements SpaceshipServicePort {
 	private SpaceshipPersistencePort spaceshipPersistencePort;
 	private PowerGeneratorServicePort powerGeneratorService;
+	private WeaponServicePort weaponServicePort;
 
-	public SpaceshipServiceImpl(SpaceshipPersistencePort spaceshipPersistencePort, PowerGeneratorServicePort powerGeneratorService) {
+	public SpaceshipServiceImpl(SpaceshipPersistencePort spaceshipPersistencePort, PowerGeneratorServicePort powerGeneratorService, WeaponServicePort weaponServicePort) {
 		this.spaceshipPersistencePort = spaceshipPersistencePort;
 		this.powerGeneratorService = powerGeneratorService;
+		this.weaponServicePort = weaponServicePort;
 	}
 
 	@Override
@@ -32,7 +38,15 @@ public class SpaceshipServiceImpl implements SpaceshipServicePort {
 			throw new BadParameterException("power-generator", spaceshipDTO.getPowerGenerator());
 		}
 		
-		spaceshipDTO.setWeapon(new WeaponDTO());
+		if(weaponServicePort.isWeaponValid(spaceshipDTO.getWeapon()) && powerGeneratorService.isPowerGeneratorValid(spaceshipDTO.getPowerGenerator())) {
+			if(spaceshipDTO.getPowerGenerator().getPowerConsumedByWeapon() > spaceshipDTO.getWeapon().getPowerNeeded()) {
+				throw new ExcessivePowerEnergyConsumptionException("weapon", spaceshipDTO.getPowerGenerator().getPowerConsumedByWeapon(), spaceshipDTO.getWeapon().getPowerNeeded());
+			}
+		}
+		
+		WeaponDTO savedWeapon = weaponServicePort.saveWeapon(spaceshipDTO.getWeapon());
+		
+		spaceshipDTO.setWeapon(savedWeapon);
 		
 		PowerGeneratorDTO savedPowerGenerator = powerGeneratorService.savePowerGenerator(spaceshipDTO.getPowerGenerator());
 		
@@ -60,7 +74,15 @@ public class SpaceshipServiceImpl implements SpaceshipServicePort {
 			throw new DestroyedSpaceshipException(victimSpaceship.getName());
 		}
 		
-		Spaceship damagedSpaceship = attackerSpaceship.getWeapon().attackSpaceship(victimSpaceship);
+		Spaceship damagedSpaceship;
+		
+		if(attackerSpaceship.getWeapon().canShoot(attackerSpaceship.getPowerGenerator())) {
+			damagedSpaceship = attackerSpaceship.getWeapon().attackSpaceship(victimSpaceship);
+		} else {
+			Weapon weapon = attackerSpaceship.getWeapon();
+			
+			throw new MissingPowerException("weapon", weapon.getPowerNeeded(), attackerSpaceship.getPowerGenerator().getPowerConsumedByWeapon());
+		}
 		
 		return spaceshipPersistencePort.saveSpaceship(damagedSpaceship);
 	}

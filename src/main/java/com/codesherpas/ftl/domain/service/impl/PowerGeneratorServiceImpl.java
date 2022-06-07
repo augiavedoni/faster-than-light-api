@@ -11,14 +11,21 @@ public class PowerGeneratorServiceImpl implements PowerGeneratorServicePort {
 	public PowerGeneratorServiceImpl(PowerGeneratorPersistencePort powerGeneratorPersistencePort) {
 		this.powerGeneratorPersistencePort = powerGeneratorPersistencePort;
 	}
+	
+	@Override
+	public boolean isPowerGeneratorValid(PowerGeneratorDTO powerGeneratorDTO) {
+		if(powerGeneratorDTO.getTotalPower() == null || powerGeneratorDTO.getTotalPower() < 0) {
+			throw new BadParameterException("total-power", powerGeneratorDTO.getTotalPower());
+		} else if(powerGeneratorDTO.getPowerConsumedByWeapon() == null || powerGeneratorDTO.getPowerConsumedByWeapon() < 0) {
+			throw new BadParameterException("power-consumed-by-weapon", powerGeneratorDTO.getTotalPower());
+		}
+		
+		return true;
+	}
 
 	@Override
 	public PowerGeneratorDTO savePowerGenerator(PowerGeneratorDTO powerGeneratorDTO) {
-		if(powerGeneratorDTO.getTotalPower() == null || powerGeneratorDTO.getTotalPower() < 0) {
-			throw new BadParameterException("total-power", powerGeneratorDTO.getTotalPower());
-		}
-		
-		powerGeneratorDTO.setPowerNotInUse(powerGeneratorDTO.getTotalPower());
+		powerGeneratorDTO.setPowerNotInUse(powerGeneratorDTO.getTotalPower() - powerGeneratorDTO.getPowerConsumedByWeapon());
 		
 		return powerGeneratorPersistencePort.savePowerGenerator(powerGeneratorDTO);
 	}
