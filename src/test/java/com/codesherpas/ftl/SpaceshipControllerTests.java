@@ -28,6 +28,8 @@ import com.codesherpas.ftl.domain.dto.SpaceshipDTO;
 import com.codesherpas.ftl.domain.dto.WeaponDTO;
 import com.codesherpas.ftl.domain.exception.BadParameterException;
 import com.codesherpas.ftl.domain.exception.DestroyedSpaceshipException;
+import com.codesherpas.ftl.domain.exception.ExcessivePowerEnergyConsumptionException;
+import com.codesherpas.ftl.domain.exception.MissingPowerException;
 import com.codesherpas.ftl.domain.exception.ResourceNotFoundException;
 import com.codesherpas.ftl.domain.port.service.SpaceshipServicePort;
 import com.codesherpas.ftl.infrastructure.entity.PowerGeneratorEntity;
@@ -75,6 +77,21 @@ public class SpaceshipControllerTests {
 				.content(JsonUtil.toJson(destructorDTO)))
 				.andExpect(status().isBadRequest());
 
+		verify(service, VerificationModeFactory.times(1)).saveSpaceship(destructorDTO);
+	}
+	
+	@Test
+	public void whenPostInvalidSpaceship_receiveExcessivePowerEnergyConsumptionException() throws Exception {
+		final SpaceshipDTO destructorDTO = new SpaceshipDTO(1L, "Destructor", 100, new WeaponDTO(1L, 5), new PowerGeneratorDTO(1L, 10, 4, 6));
+		
+		given(service.saveSpaceship(destructorDTO)).willThrow(new ExcessivePowerEnergyConsumptionException("weapon", destructorDTO.getPowerGenerator().getPowerConsumedByWeapon(), destructorDTO.getWeapon().getPowerNeeded()));
+		
+		mvc.perform(
+				post("/api/spaceships")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(JsonUtil.toJson(destructorDTO)))
+				.andExpect(status().isPreconditionFailed());
+		
 		verify(service, VerificationModeFactory.times(1)).saveSpaceship(destructorDTO);
 	}
 
@@ -152,5 +169,22 @@ public class SpaceshipControllerTests {
 				.params(params)
 			    .contentType(MediaType.APPLICATION_JSON))
 			    .andExpect(status().isBadRequest());
+	}
+	
+	@Test void whenShootSpaceship_receiveMissingPowerException() throws Exception {
+		final SpaceshipDTO destructorDTO = new SpaceshipDTO(1L, "Destructor", 100, new WeaponDTO(1L, 5), new PowerGeneratorDTO(1L, 10, 6, 4));
+		
+		final LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+		
+		params.add("attackerId", String.valueOf(destructorDTO.getId()));
+		params.add("victimId", "2");
+		
+		given(service.shootSpaceship(1L, 2L)).willThrow(new MissingPowerException("weapon", destructorDTO.getWeapon().getPowerNeeded(), destructorDTO.getPowerGenerator().getPowerConsumedByWeapon()));
+		
+		mvc.perform(
+				patch("/api/spaceships/shoot")
+				.params(params)
+			    .contentType(MediaType.APPLICATION_JSON))
+			    .andExpect(status().isPreconditionFailed());
 	}
 }
