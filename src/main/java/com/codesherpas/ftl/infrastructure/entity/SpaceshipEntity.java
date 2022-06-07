@@ -1,6 +1,5 @@
 package com.codesherpas.ftl.infrastructure.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +26,7 @@ public class SpaceshipEntity {
 	@Column(name = "health", nullable = false)
 	private Integer health;
 	
-	@OneToOne(targetEntity = WeaponEntity.class, cascade = CascadeType.ALL)
+	@OneToOne(targetEntity = WeaponEntity.class)
 	private WeaponEntity weapon;
 	
 	@OneToOne(targetEntity = PowerGeneratorEntity.class)
