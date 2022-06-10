@@ -75,4 +75,12 @@ curl --request PATCH http://localhost:8080/api/spaceships/shoot?attackerId=1&vic
   * The health of the spaceship cannot go below 0, so if a spaceship reaches that state, that spaceship is considered destroyed and you can't attack it any more.
   * The weapon on the spaceship is not going to be able to shoot if the power-consumed-by-weapon isn't the same as the weapon-power-needed field.
 
+4. **PATCH /spaceships/power-generator?powerGeneratorId={power-generator-id}&weaponId={weapon-id}&newPowerConsumedByWeapon={new-power-consumed-by-weapon-value}**: with this endpoint you can edit how much power the weapon is consuming.
+```
+curl --request PATCH http://localhost:8080/api/spaceships/power-generator?powerGeneratorId=1&weaponId=1&newPowerConsumedByWeapon=1
+```
+**IMPORTANT:** there are some things to consider about this particular endpoint. They're as follow:
+
+  * The field newPowerConsumedByWeapon cannot be negative or be higher than the power-needed field from the weapon. Also, the value must respect the following sum: newPowerConsumedByWeapon + power-not-in-use = total-power. Otherwise you'll receive and exception.
+
 ### Hope you like it and have fun :)
