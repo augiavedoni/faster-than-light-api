@@ -2,7 +2,7 @@
 
 ## About
 
-This RESTful API aims to simulate spaceships fighting against each other. Some restrictions and game rules were inspired by the videogame [FTL: Faster Than Light](https://store.steampowered.com/app/212680/FTL_Faster_Than_Light/). This project is created as requested by the pre-training program dictated by Code Sherpas.
+This RESTful API aims to simulate spaceships fighting against each other. Some restrictions and game rules were inspired by the videogame [FTL: Faster Than Light](https://store.steampowered.com/app/212680/FTL_Faster_Than_Light/).
 
 **IMPORTANT:** at the moment, this API is under development so the features present are not definitive and they may be subject to change. Besides that, you may encounter bugs or things that can be polished. If you want to help, don't doubt it and submit a PR.
 
