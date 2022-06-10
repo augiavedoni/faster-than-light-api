@@ -98,8 +98,7 @@ public class SpaceshipControllerTests {
 	@Test
 	public void whenGetAllSpaceships_thenReceiveListOfSpaceships() throws Exception {
 		final SpaceshipDTO destructorDTO = new SpaceshipDTO(1L, "Destructor", 100, new WeaponDTO(1L, 5), new PowerGeneratorDTO(1L, 10, 5, 5));
-		final SpaceshipDTO fireDTO = new SpaceshipDTO(2L, "Fire", 99, new WeaponDTO(2L, 5), new PowerGeneratorDTO(2L, 10, 5, 5));
-
+		final SpaceshipDTO fireDTO = new SpaceshipDTO(2L, "Fire", 100, new WeaponDTO(2L, 5), new PowerGeneratorDTO(2L, 10, 5, 5));
 	    final List<SpaceshipDTO> spaceships = Arrays.asList(destructorDTO, fireDTO);
 
 	    given(service.getSpaceships()).willReturn(spaceships);
@@ -116,14 +115,14 @@ public class SpaceshipControllerTests {
 	@Test
 	public void whenShootSpaceship_thenReceiveShooted() throws Exception {
 		final SpaceshipDTO destructorDTO = new SpaceshipDTO(1L, "Destructor", 100, new WeaponDTO(1L, 5), new PowerGeneratorDTO(1L, 10, 5, 5));
-		final SpaceshipDTO fireDTO = new SpaceshipDTO(2L, "Fire", 99, new WeaponDTO(2L, 5), new PowerGeneratorDTO(2L, 10, 5, 5));
-		
-		final LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+		final SpaceshipDTO fireDTO = new SpaceshipDTO(2L, "Fire", 100, new WeaponDTO(2L, 5), new PowerGeneratorDTO(2L, 10, 5, 5));
+		final SpaceshipDTO attackedFireDTO = new SpaceshipDTO(2L, "Fire", 99, new WeaponDTO(2L, 5), new PowerGeneratorDTO(2L, 10, 5, 5));
+		LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
 		
 		params.add("attackerId", String.valueOf(destructorDTO.getId()));
 		params.add("victimId", String.valueOf(fireDTO.getId()));
 		
-		given(service.shootSpaceship(destructorDTO.getId(), fireDTO.getId())).willReturn(fireDTO);
+		given(service.shootSpaceship(destructorDTO.getId(), fireDTO.getId())).willReturn(attackedFireDTO);
 		
 		mvc.perform(
 				patch("/api/spaceships/shoot")
