@@ -11,7 +11,7 @@ import com.codesherpas.ftl.infrastructure.entity.WeaponEntity;
 public interface WeaponMapper {
 	WeaponMapper INSTANCE = Mappers.getMapper(WeaponMapper.class);
 	
-	WeaponDTO convertToDto(WeaponEntity weaponEntity);
-	Weapon convertToData(WeaponEntity weaponDTO);
-	WeaponEntity convertToEntity(WeaponDTO weaponDTO);
+	WeaponDTO convertToDto(WeaponEntity weapon);
+	Weapon convertToData(WeaponEntity weapon);
+	WeaponEntity convertToEntity(WeaponDTO weapon);
 }

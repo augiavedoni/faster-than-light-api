@@ -35,7 +35,7 @@ public class ApplicationConfig {
 	
 	@Bean
 	public PowerGeneratorServicePort powerGeneratorService() {
-		return new PowerGeneratorServiceImpl(powerGeneratorPersistence());
+		return new PowerGeneratorServiceImpl(powerGeneratorPersistence(), weaponPersistence());
 	}
 	
 	@Bean
