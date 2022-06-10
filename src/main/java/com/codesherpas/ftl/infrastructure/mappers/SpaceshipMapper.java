@@ -14,8 +14,8 @@ public interface SpaceshipMapper {
 	SpaceshipMapper INSTANCE = Mappers.getMapper(SpaceshipMapper.class);
 	
 	SpaceshipDTO convertToDto(SpaceshipEntity spaceship);
-	Spaceship convertToData(SpaceshipEntity spaceshipDTO);
-	SpaceshipEntity convertToEntity(SpaceshipDTO spaceshipDTO);
+	Spaceship convertToData(SpaceshipEntity spaceship);
+	SpaceshipEntity convertToEntity(SpaceshipDTO spaceship);
 	SpaceshipEntity convertToEntity(Spaceship spaceship);
 	List<SpaceshipDTO> convertToListOfDto(List<SpaceshipEntity> spaceships);
 }
