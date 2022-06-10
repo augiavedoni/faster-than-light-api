@@ -6,6 +6,10 @@ This RESTful API aims to simulate spaceships fighting against each other. Some r
 
 **IMPORTANT:** at the moment, this API is under development so the features present are not definitive and they may be subject to change. Besides that, you may encounter bugs or things that can be polished. If you want to help, don't doubt it and submit a PR.
 
+## Current CI/CD pipeline status
+
+[![CI/CD Pipeline](https://github.com/augiavedoni/faster_than_light/actions/workflows/java.yml/badge.svg)](https://github.com/augiavedoni/faster_than_light/actions/workflows/java.yml)
+
 ## Spaceship model
 
 Each spaceship is made up of the following attributes:
